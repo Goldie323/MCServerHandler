@@ -1,0 +1,3 @@
+/usr/bin/cmake -E rm -f CMakeFiles/MCServerHandler.dir/objects.a
+/usr/bin/x86_64-w64-mingw32-ar qc CMakeFiles/MCServerHandler.dir/objects.a @CMakeFiles/MCServerHandler.dir/objects1
+/usr/bin/x86_64-w64-mingw32-gcc -shared -o libMCServerHandler.dll -Wl,--out-implib,libMCServerHandler.dll.a -Wl,--major-image-version,0,--minor-image-version,0 -Wl,--whole-archive CMakeFiles/MCServerHandler.dir/objects.a -Wl,--no-whole-archive @CMakeFiles/MCServerHandler.dir/linkLibs.rsp
