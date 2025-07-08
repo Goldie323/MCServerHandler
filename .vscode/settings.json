@@ -1,9 +1,0 @@
-{
-    "files.associations": {
-        "mcserverhandler.h": "c",
-        "cjson.h": "c",
-        "stat.h": "c",
-        "string.h": "c"
-    },
-    "cmake.ignoreCMakeListsMissing": true
-}
