@@ -10,8 +10,48 @@
 #include <string.h>
 #include <dirent.h>
 
-#define MAX_PATH 32768
 #define MAX_JSON 32
+
+#if defined(_WIN32) || defined(_WIN64)
+
+    #include <windows.h>
+    #define MAX_PATH 260
+
+    int CreateSymLink(const char* target, const char* link) {
+        char command[MAX_PATH * 2 + 32]; // Enough for both paths and the command
+
+        // Format: mklink /J "link" "target"
+        snprintf(command, sizeof(command), "cmd /C mklink /J \"%s\" \"%s\"", link, target);
+
+        int result = system(command);
+        if (result != 0) {
+            fprintf(stderr, "Failed to create junction. Exit code: %d\n", result);
+            return 1;
+        }
+
+        printf("Junction created: %s -> %s\n", link, target);
+        return 0;
+    }
+
+#else // POSIX systems (Linux, macOS, FreeBSD)
+
+    #include <unistd.h>
+    #include <errno.h>
+
+    #define MAX_PATH 4096
+
+    int CreateSymLink(const char* target, const char* link) {
+        if (symlink(target, link) != 0) {
+            perror("Failed to create symbolic link");
+            return 1;
+        }
+
+        printf("Symbolic link created: %s -> %s\n", link, target);
+        return 0;
+    }
+
+#endif
+
 
 static bool EmptyDir(const char* Dir) {
 
