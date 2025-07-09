@@ -9,6 +9,7 @@
 #include <sys/stat.h>
 #include <string.h>
 #include <dirent.h>
+#include <stdbool.h>
 
 #define MAX_JSON 32
 
