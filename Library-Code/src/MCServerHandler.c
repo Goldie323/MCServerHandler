@@ -45,7 +45,7 @@ int SetServerSource(const char* Dir) {
 
 int SetWorldDir(const char* Dir, bool ForceNonEmpty) {
 
-    if (!realDir(Dir)) {
+    if (!RealDir(Dir)) {
         return 1;
     }
 
@@ -60,7 +60,7 @@ int SetWorldDir(const char* Dir, bool ForceNonEmpty) {
 
 int SetServerDir(const char* Dir, bool ForceNonEmpty) {
 
-    if (!realDir(Dir)) {
+    if (!RealDir(Dir)) {
         return 1;
     }
 

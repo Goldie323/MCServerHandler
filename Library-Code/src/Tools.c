@@ -41,7 +41,7 @@
 
     #define MAX_PATH 4096
 
-    int CreateSymLink(const char* target, const char* link) {
+    static int CreateSymLink(const char* target, const char* link) {
         if (symlink(target, link) != 0) {
             perror("Failed to create symbolic link");
             return 1;
@@ -49,6 +49,19 @@
 
         printf("Symbolic link created: %s -> %s\n", link, target);
         return 0;
+    }
+
+    static bool IsAdmin() {
+        static bool Admin = false;
+        static bool AdminChecked = false;
+
+        if (!AdminChecked && (geteuid()==0)) {
+            Admin = true;
+            AdminChecked = true;
+        }
+
+        return Admin;
+
     }
 
 #endif
