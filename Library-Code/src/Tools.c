@@ -72,7 +72,7 @@ static bool EmptyDir(const char* Dir) {
     DIR* dir = opendir(Dir);
 
     if (!dir) {
-        printf("Could not open directory\n");
+        printf("Error: Could not open directory\n");
         return 0;
     }
 
@@ -80,7 +80,7 @@ static bool EmptyDir(const char* Dir) {
     while ((entry = readdir(dir)) != NULL) {
         if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0) {
                 closedir(dir);
-                printf("Directory is not empty\n");
+                printf("Error: Directory is not empty\n");
                 return 0;
         }
     }
@@ -94,12 +94,12 @@ static bool RealDir(const char* Dir) {
     struct stat statbuf;
 
     if (stat(Dir, &statbuf) != 0) {
-        printf("File failed to load statistics about itself\n");
+        printf("Error: File failed to load statistics about itself\n");
         return 0;
     }
 
     if (!S_ISDIR(statbuf.st_mode)){
-        printf("File is not a folder\n");
+        printf("Error: File is not a folder\n");
         return 0;
     }
 
@@ -109,7 +109,7 @@ static bool RealDir(const char* Dir) {
 static cJSON* ParseJsonFile(const char* FileName) {
     FILE* JsonFile = fopen(FileName, "r");
     if (JsonFile == NULL) {
-        printf("Error opening file: %s\n", FileName);
+        printf("Error: Couldn't open file: %s\n", FileName);
         return NULL;
     }
 
