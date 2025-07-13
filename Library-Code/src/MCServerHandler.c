@@ -74,43 +74,23 @@ int SetServerDir(const char* Dir, bool ForceNonEmpty) {
 }
 
 char* GetWorldSource() {
-    char* ReturnSource = malloc(strlen(WorldSrcDir)+1);
-    if (ReturnSource==NULL) {
-        return NULL;
-    }
-    strcpy(ReturnSource, WorldSrcDir);
-    return ReturnSource;
+    return (const char *)WorldSrcDir;
 }
 
 char* GetServerSource() {
-    char* ReturnSource = malloc(strlen(ServerSrcDir)+1);
-    if (ReturnSource==NULL) {
-        return NULL;
-    }
-    strcpy(ReturnSource, ServerSrcDir);
-    return ReturnSource;
+    return (const char *)ServerSrcDir;
 }
 
 char* GetWorldWorkDir() {
-    char* ReturnSource = malloc(strlen(WorldWorkDir)+1);
-    if (ReturnSource==NULL) {
-        return NULL;
-    }
-    strcpy(ReturnSource, WorldWorkDir);
-    return ReturnSource;
+    return (const char *)WorldWorkDir;
 }
 
 char* GetServerWorkDir() {
-    char* ReturnSource = malloc(strlen(ServerWorkDir)+1);
-    if (ReturnSource==NULL) {
-        return NULL;
-    }
-    strcpy(ReturnSource, ServerWorkDir);
-    return ReturnSource;
+    return (const char *)ServerWorkDir;
 }
 
 char* GetWorldJson(bool Detailed, bool Pretty) {
-    if (WorldSrcDir=="NULL"){
+    if (WorldSrcDir==NULL){
         printf("Error: World Source Directory not set, set using SetWorldSource(char* Dir)\n");
         return NULL;
     }
@@ -176,7 +156,7 @@ char* GetWorldJson(bool Detailed, bool Pretty) {
 }
 
 char* GetServerJson(bool Pretty) {
-    if (ServerSrcDir=="NULL"){
+    if (ServerSrcDir==NULL){
         printf("Error: Server Source Directory not set, set using SetServerSource(char* Dir)\n");
         return NULL;
     }
