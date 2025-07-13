@@ -1,3 +1,0 @@
-/home/goldie323/Coding Project/MCServerHandler C-ver/Library-Code/build/CMakeFiles/MCServerHandler.dir
-/home/goldie323/Coding Project/MCServerHandler C-ver/Library-Code/build/CMakeFiles/edit_cache.dir
-/home/goldie323/Coding Project/MCServerHandler C-ver/Library-Code/build/CMakeFiles/rebuild_cache.dir
