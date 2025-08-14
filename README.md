@@ -1,3 +1,7 @@
+-- I stopped working on this, I have another project that does the same thing but instead of it being in C for good embedding I'm having it be lua that calls C code for anything that is platform specific. This would be on my profile under the same name except it's lua version --
+
+
+
 # MCServerHandler
 A headless library for handling minecraft servers. Coded in C 🤮 because I wanted people to be able to make a wrapper in basically any language using their method for including C code.
 
