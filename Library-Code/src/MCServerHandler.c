@@ -14,6 +14,7 @@ static char WorldSrcDir[MAX_PATH];
 static char ServerSrcDir[MAX_PATH];
 static char WorldWorkDir[MAX_PATH];
 static char ServerWorkDir[MAX_PATH];
+struct WorldData CurrentWorld;
 
 void FreeString(char* Str) {
     if (Str!=NULL) {
@@ -73,19 +74,19 @@ int SetServerDir(const char* Dir, bool ForceNonEmpty) {
     return 0;
 }
 
-char* GetWorldSource() {
+const char* GetWorldSource() {
     return (const char *)WorldSrcDir;
 }
 
-char* GetServerSource() {
+const char* GetServerSource() {
     return (const char *)ServerSrcDir;
 }
 
-char* GetWorldWorkDir() {
+const char* GetWorldWorkDir() {
     return (const char *)WorldWorkDir;
 }
 
-char* GetServerWorkDir() {
+const char* GetServerWorkDir() {
     return (const char *)ServerWorkDir;
 }
 
@@ -209,3 +210,47 @@ char* GetServerJson(bool Pretty) {
     return result;
 }
 
+int NewWorld(const char* Name, const int BackupAmount) {
+
+    if (CurrentWorld.UpdatedFiles) {
+        SaveWorld(CurrentWorld, WorldSrcDir, WorldWorkDir); // still need to implement
+        RemoveWorld();
+        CurrentWorld.UpdatedFiles = false;
+        CurrentWorld.UpdatedData = false;
+    }
+
+    if (CurrentWorld.UpdatedData) {
+        SaveWorldJson(CurrentWorld, WorldSrcDir); // still need to implement
+        CurrentWorld.UpdatedData = false;
+    }
+
+    if (CurrentWorld.DataRetrieved) {
+        cJSON_free(CurrentWorld.WorldData);
+        CurrentWorld.DataRetrieved = false;
+    }
+
+    CurrentWorld.WorldData = cJSON_CreateObject();
+    
+    if (CurrentWorld.WorldData == NULL) {
+        printf("Error: Couldn't make JSON object\n");
+        return 1;
+    }
+
+    cJSON_AddStringToObject(CurrentWorld.WorldData, "name", Name);
+    cJSON_AddNumberToObject(CurrentWorld.WorldData, "backups", BackupAmount);
+    cJSON_AddNumberToObject(CurrentWorld.WorldData, "ID", GetID());
+    CurrentWorld.DataRetrieved = true;
+    
+    return 0;
+    
+}
+
+int RemoveWorld() {
+    if (CleanFolder(WorldWorkDir)) {
+        return 1;
+    }
+
+    cJSON_free(CurrentWorld.WorldData);
+
+    return 0;
+}

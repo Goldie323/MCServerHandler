@@ -16,9 +16,10 @@
 #if defined(_WIN32) || defined(_WIN64)
 
     #include <windows.h>
+    #include <tchar.h>
     #define MAX_PATH 260
 
-    int CreateSymLink(const char* target, const char* link) {
+    static int CreateSymLink(const char* target, const char* link) {
         char command[MAX_PATH * 2 + 32]; // Enough for both paths and the command
 
         // Format: mklink /J "link" "target"
@@ -31,6 +32,34 @@
         }
 
         printf("Junction created: %s -> %s\n", link, target);
+        return 0;
+    }
+
+    static int CleanFolder(const char *path) {
+        WIN32_FIND_DATA fd;
+        char search_path[MAX_PATH];
+        snprintf(search_path, sizeof(search_path), "%s\\*", path);
+
+        HANDLE hFind = FindFirstFile(search_path, &fd);
+        if (hFind == INVALID_HANDLE_VALUE) return -1;
+
+        do {
+            if (strcmp(fd.cFileName, ".") == 0 || strcmp(fd.cFileName, "..") == 0)
+                continue;
+
+            char full_path[MAX_PATH];
+            snprintf(full_path, sizeof(full_path), "%s\\%s", path, fd.cFileName);
+
+            if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+                CleanFolder(full_path);
+                RemoveDirectory(full_path);
+            } else {
+                DeleteFile(full_path);
+            }
+
+        } while (FindNextFile(hFind, &fd));
+
+        FindClose(hFind);
         return 0;
     }
 
@@ -55,8 +84,8 @@
         static bool Admin = false;
         static bool AdminChecked = false;
 
-        if (!AdminChecked && (geteuid()==0)) {
-            Admin = true;
+        if (!AdminChecked) {
+            Admin = (geteuid()==0);
             AdminChecked = true;
         }
 
@@ -64,7 +93,42 @@
 
     }
 
+    static int CleanFolder(const char *path) {
+        DIR *dir = opendir(path);
+        if (!dir) return 1;
+
+        struct dirent *entry;
+        while ((entry = readdir(dir)) != NULL) {
+            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+                continue;
+
+            char full_path[4096];
+            snprintf(full_path, sizeof(full_path), "%s/%s", path, entry->d_name);
+
+            struct stat st;
+            if (stat(full_path, &st) == 0) {
+                if (S_ISDIR(st.st_mode)) {
+                        CleanFolder(full_path);
+                    rmdir(full_path);
+                } else {
+                    unlink(full_path);
+                }
+            }
+        }
+
+        closedir(dir);
+        return 0;
+    }
+
 #endif
+
+struct WorldData {
+    cJSON* WorldData;
+    bool UpdatedFiles;
+    bool UpdatedData;
+    bool DataRetrieved;
+};
+
 
 
 static bool EmptyDir(const char* Dir) {
@@ -130,7 +194,7 @@ static cJSON* ParseJsonFile(const char* FileName) {
 
 static char* RemoveJsonExtension(const char* Str, char* NewStr) {
     strcpy(NewStr, Str);
-    int Len = strlen(NewStr)+1;
+    int Len = strlen(NewStr);
     if (Len >= 5 && strcmp(NewStr + Len - 5, ".json") == 0) {
         NewStr[Len - 5] = '\0'; // Truncate ".json"
     }
@@ -151,6 +215,19 @@ static void AddJsonFileToObject(const char* BasePath, const char* FileName, cJSO
     RemoveJsonExtension(FileName, Name);
     cJSON_AddItemToObject(Object, Name, JsonData);
     return;
+}
+
+static void SaveWorldJson(struct WorldData LoadedWorld, const char* ScrDir) {
+    return;
+}
+
+static void SaveWorld(struct WorldData LoadedWorld, const char* SrcDir, const char* WorkDir) {
+    SaveWorldJson(LoadedWorld, SrcDir); //need to implement
+    return;
+}
+
+static int GetID() {
+    return -1;
 }
 
 #endif
